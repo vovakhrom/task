@@ -1,5 +1,8 @@
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import org.bouncycastle.util.encoders.Hex;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
+
 import java.security.*;
 
 public class spoke {
@@ -85,8 +88,9 @@ public class spoke {
             SecureRandom rand = new SecureRandom();
             long v = Math.abs(rand.nextLong());
             String key = Long.toHexString(v) + Long.toHexString(rand.nextLong());
+            SHA3.DigestSHA3 S3 = new SHA3.Digest256();
             System.out.println("HMAC:");
-            System.out.println(key);
+            System.out.println(Hex.toHexString(S3.digest(key.getBytes())));
             printing(words);
             Scanner scn = new Scanner(System.in);
             System.out.print("Ваш выбор: ");
@@ -95,13 +99,16 @@ public class spoke {
                 System.out.println("До свидания!");
                 System.exit(0);
             }
+            if (num<0 || num>words.size()){
+                continue label;
+            }
             System.out.println("Вы выбрали :" + words.get(num));
             int compmove = generator(v, words);
             System.out.println("Выбор компьютера: " + words.get(compmove));
             computerwins(words, num, compmove);
+            System.out.println("Hmac key:"+key);
             continue label;
         }
     }
 
 }
-
