@@ -1,7 +1,8 @@
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import org.bouncycastle.util.encoders.Hex;
-import org.bouncycastle.jcajce.provider.digest.SHA3;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 
 import java.security.*;
 
@@ -43,7 +44,12 @@ public class spoke {
         int f = (int) (v % size);
         return f;
     }
-
+    public static String encode(String key, String data) throws Exception {
+        Mac sha256 = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA256");
+        sha256.init(secret_key);
+        return Hex.toHexString(sha256.doFinal(data.getBytes("UTF-8")));
+    }
     static void computerwins(ArrayList<String> word, int move, int computermove) {
         int user = move;
         int wons = word.size() / 2;
@@ -75,7 +81,7 @@ public class spoke {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException {
         if (replay(args) == false) {
             System.out.println("Введите нечётное число >=3 неповторяющихся строк .Например: Камень Ножницы Бумага");
             return;
@@ -88,9 +94,12 @@ public class spoke {
             SecureRandom rand = new SecureRandom();
             long v = Math.abs(rand.nextLong());
             String key = Long.toHexString(v) + Long.toHexString(rand.nextLong());
-            SHA3.DigestSHA3 S3 = new SHA3.Digest256();
             System.out.println("HMAC:");
-            System.out.println(Hex.toHexString(S3.digest(key.getBytes())));
+            try {
+                System.out.println(encode("keys", key));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             printing(words);
             Scanner scn = new Scanner(System.in);
             System.out.print("Ваш выбор: ");
