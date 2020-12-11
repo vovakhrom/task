@@ -96,7 +96,7 @@ public class spoke {
             String key = Long.toHexString(v) + Long.toHexString(rand.nextLong());
             System.out.println("HMAC:");
             try {
-                System.out.println(encode("keys", key));
+                System.out.println(encode(key, key));
             } catch (Exception e) {
                 e.printStackTrace();
             }
